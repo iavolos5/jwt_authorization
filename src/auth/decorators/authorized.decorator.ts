@@ -1,13 +1,19 @@
-import { createParamDecorator, type ExecutionContext } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { User } from '@prisma/client';
-import type { Request } from 'express';
-
+import { Request } from 'express';
+interface AuthenticatedRequest {
+  user?: User;
+}
 export const Authorized = createParamDecorator(
-  (data: keyof User, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest() as Request;
+  (data: keyof User | undefined, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest<AuthenticatedRequest>();
 
     const user = request.user;
 
-    return data ? user![data] : user;
+    if (!user) {
+      return null;
+    }
+
+    return data ? user[data] : user;
   },
 );
