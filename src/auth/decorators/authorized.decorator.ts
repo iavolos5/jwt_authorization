@@ -1,6 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { Request } from 'express';
 interface AuthenticatedRequest {
   user?: User;
 }
